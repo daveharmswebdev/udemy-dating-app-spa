@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Response } from '@angular/http';
-import { map, tap } from 'rxjs/operators';
+import { map, tap, catchError } from 'rxjs/operators';
 import { headers } from './headers';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/throw';
 
 @Injectable()
 export class AuthService {
@@ -20,12 +22,36 @@ export class AuthService {
           console.log(result);
           localStorage.setItem('token', result.tokenString);
         }),
-        map(() => 'success')
+        map(() => 'success'),
+        catchError(this.handleError)
       );
   }
 
   register(model: any) {
-    return this.http.post<any>(this._baseUrl + 'register', model, { headers });
+    return this.http.post<any>(this._baseUrl + 'register', model, { headers })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    const applicationError = error.headers.get('application-error');
+
+    if (applicationError) {
+      return Observable.throw(applicationError);
+    }
+
+    const serverError = error.error;
+    let modelStateErrors = '';
+    if (serverError) {
+      for (const key in serverError) {
+        if (serverError[key]) {
+          modelStateErrors += serverError[key] + '\n';
+        }
+      }
+    }
+
+    return Observable.throw(modelStateErrors || 'Server Error');
   }
 
 }
