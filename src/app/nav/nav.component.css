@@ -1,3 +1,7 @@
 a.logout {
   color: whitesmoke;
 }
+
+.dropdown-menu li {
+  cursor: pointer;
+}

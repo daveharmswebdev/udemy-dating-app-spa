@@ -12,6 +12,8 @@ import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './home/register/register.component';
 import { AlertifyService } from './_services/alertify.service';
 
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+
 
 @NgModule({
   declarations: [
@@ -24,7 +26,8 @@ import { AlertifyService } from './_services/alertify.service';
   imports: [
     BrowserModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    BsDropdownModule.forRoot()
   ],
   providers: [
     ValueService,

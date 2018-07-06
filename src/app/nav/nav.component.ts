@@ -22,11 +22,16 @@ export class NavComponent implements OnInit {
     return (this.auth.decodedToken && this.auth.decodedToken.unique_name) || 'User';
   }
 
+  get loggedIn() {
+    return this.auth.loggedIn();
+  }
+
+
   login() {
     console.log(this.model);
     this.auth.login(this.model).subscribe(
       data => {
-        this.alertify.success(data)
+        this.alertify.success(data);
         this.model = {};
       },
       error => this.alertify.error(error)
@@ -39,7 +44,4 @@ export class NavComponent implements OnInit {
     this.alertify.message('You have logged out.');
   }
 
-  loggedIn() {
-    return this.auth.loggedIn();
-  }
 }
